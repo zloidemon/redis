@@ -1,6 +1,7 @@
 local connection = require('redis.connection')
 local strings    = require('redis.strings')
 local keys       = require('redis.keys')
+local sets       = require('redis.sets')
 
 return {
     -- Connection section
@@ -56,4 +57,20 @@ return {
     ['ttl']       = keys.ttl,
     ['type']      = keys.type,
     ['wait']      = keys.wait,
+    -- Sets section
+    ['sadd']        = sets.sadd,
+    ['scard']       = sets.scard,
+    ['sdiff']       = sets.sdiff,
+    ['sdiffstore']  = sets.sdiffstore,
+    ['sinter']      = sets.sinter,
+    ['sinterstore'] = sets.sinterstore,
+    ['sismember']   = sets.sismember,
+    ['smembers']    = sets.smembers,
+    ['smove']       = sets.smove,
+    ['spop']        = sets.spop,
+    ['srandmember'] = sets.srandmember,
+    ['srem']        = sets.srem,
+    ['sscan']       = sets.sscan,
+    ['sunion']      = sets.sunion,
+    ['sunionstore'] = sets.sunionstore,
 }

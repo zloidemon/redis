@@ -20,6 +20,7 @@ build = {
         ["redis.connection"] = "redis/connection.lua",
         ["redis.init"]       = "redis/init.lua",
         ["redis.keys"]       = "redis/keys.lua",
+        ["redis.sets"]       = "redis/sets.lua",
         ["redis.strings"]    = "redis/strings.lua",
     }
 }
