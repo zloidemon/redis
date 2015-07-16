@@ -28,11 +28,31 @@ local tools = {
     array  = function(self, size)
         self.s:write("*" .. size .. "\r\n")
     end,
+    space  = function(self, mult)
+        if mult then
+            local name = string.format('redis_%s_kk', self.index)
+            if not box.space[name] then
+                space = box.schema.space.create(name)
+                space:create_index('keykey',
+                    {type='HASH', parts = {1, 'STR', 2, 'STR'}})
+                space:create_index('primary',
+                    {type='TREE', parts = {1, 'STR'}, unique = false})
+            end
+            return box.space[name]
+        end
+        local name = string.format('redis_%s_kv', self.index)
+        if not box.space[name] then
+            space = box.schema.space.create(name)
+            space:create_index('primary',
+                {type='HASH', parts = {1, 'STR'}})
+        end
+        return box.space[name]
+    end,
 }
 
 local function process_request(self, s, peer)
     local request = {
-        space = self.spaces['0']
+        index = '0'
     }
     local command = nil
     local counter = 0
@@ -78,36 +98,12 @@ local function process_request(self, s, peer)
                 request:e_cstm(string.format("unknown command '%s'", command))
             end
             request = {
-                space = request.space
+                index = request.index
             }
             command = nil
             counter = 0
         end
     end
-end
-
-local function redis_space(self, opts)
-    if type(opts) ~= 'table' then
-        error('incorrect settings of redis sapces')
-    end
-
-    if not opts.id or type(opts.id) ~= 'string' then
-        error('incorrect id type, must be string')
-    end
-
-    if not opts.name or type(opts.name) ~= 'string' then
-        error('incorrect name, must be string')
-    end
-    
-    local space = box.space[opts.name]
-    if not space then    
-        logger.info('Space %s does not exist, make a new space', opts.name)
-        space = box.schema.space.create(opts.name)
-        space:create_index('primary', {type='HASH', parts = {1, 'STR'}})
-    end
-
-    self.spaces[opts.id] = opts.name
-    return self
 end
 
 local function redis_stop(self)
@@ -165,14 +161,13 @@ local export = {
             error('port must to be number')
         end
         local self = {
-            host = host,
-            port = port,
-            is_run = false,
-            spaces = {},
-            start = redis_start,
-            stop  = redis_stop,
-            space = redis_space,
-            command = redis_command,
+            host     = host,
+            port     = port,
+            is_run   = false,
+            spaces   = {},
+            start    = redis_start,
+            stop     = redis_stop,
+            command  = redis_command,
             commands = commands,
         }
         return self

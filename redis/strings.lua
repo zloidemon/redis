@@ -6,7 +6,7 @@ local function get(self)
     if not self[2] or type(self[2].data) ~= 'string' then
         self:e_cstm("WRONGTYPE wrong kind of value")
     end
-    local ret = box.space[self.space]:get({self[2].data})
+    local ret = self:space():get({self[2].data})
     if not ret then
         self:null()
     else
@@ -17,7 +17,7 @@ end
 local function set(self)
     if self[2] and type(self[2].data) == 'string' then
         if self[3] and type(self[3].data) == 'string' then
-            box.space[self.space]:replace({self[2].data, self[3].data})
+            self:space():replace({self[2].data, self[3].data})
             self:ok()
         else
             self:e_miss()
@@ -31,7 +31,7 @@ local function mget(self)
     local ret = nil
     self:array(self.len - 1)
     for i=2, self.len do
-        ret = box.space[self.space]:get({self[i].data})
+        ret = self:space():get({self[i].data})
         if ret then
             self:bulk(ret[2])
         else

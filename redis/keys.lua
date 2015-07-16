@@ -5,7 +5,7 @@ end
 local function del(self)
     local counter = 0
     for i=2, self.len do
-        if box.space[self.space]:delete({self[i].data}) then
+        if self:space():delete({self[i].data}) then
             counter = counter + 1
         end
     end
@@ -16,7 +16,7 @@ local function exists(self)
     if self.len ~= 2 then
         self:e_miss()
     end
-    if box.space[self.space]:get({self[2].data}) then
+    if self:space():get({self[2].data}) then
         self:number(1)
     else
         self:number(0)

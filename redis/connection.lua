@@ -15,8 +15,8 @@ local function echo(self)
 end
 
 local function select(self)
-    if self.spaces[self[2].data] then
-        self.space = self.spaces[self[2].data]
+    if self[2] and self[2].data then
+        self.index = self[2].data
         self:ok()
     else
         self:s_cstm("Space not found")
