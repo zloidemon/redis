@@ -10,6 +10,4 @@ end
 
 redis = r.new('127.0.0.1', 6379)
     :command('ping', pp) 
-    :space({id='0', name='main'})
-    :space({id='1', name='ololo'})
     :start()
